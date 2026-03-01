@@ -49,3 +49,9 @@ jobs:
     - name: Start tests
       run: |
         pytest -v
+        
+    - name: Cleanup container
+      if: always()
+      run: |
+        docker stop events-api-test || true
+        docker rm events-api-test || true
