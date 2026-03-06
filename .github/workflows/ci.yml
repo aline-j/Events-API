@@ -74,3 +74,17 @@ jobs:
     - name: Trigger Render redeploy
       run: |
         curl -X POST ${{secrets.RENDER_DEPLOY_HOOK}}/events-api:latest
+
+    - name: Smoke test against Render
+      run: |
+        for i in {1..20}; do
+          if curl -fsS ${{secrets.RENDER_BASE_URL}}/api/health; then
+            echo "Render deployment healthy"
+            exit 0
+          fi
+          echo "Waiting for Render service...($i)"
+          sleep 3
+        done
+        
+        echo "Render smoke test failed"
+        exit 1
